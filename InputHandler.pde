@@ -25,4 +25,10 @@ static class InputHandler {
       break;
     }
   }
+  
+  static void receiveInput(int incomingInt) {
+    if (incomingInt > -1) {
+      lastInput = incomingInt;
+    }
+  }
 }

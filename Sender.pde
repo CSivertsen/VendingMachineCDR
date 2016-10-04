@@ -8,6 +8,7 @@ class Sender {
   
   void sendFrame(PImage postImg) {
     oocsi.channel("CDRVendingTest").data("frame1", postImg).send();  
+    //println("Sending frame");
   }
   
   void sendText(String postMsg) {

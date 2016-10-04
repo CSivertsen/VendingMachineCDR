@@ -19,6 +19,7 @@ public class Receiver {
     println("Did not pass if statement");
     println("Has isStealing2?: " + event.has("isStealing2"));
     }
+    
   }
   
   public PImage receiveFrame(){

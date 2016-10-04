@@ -1,3 +1,4 @@
+import processing.serial.*;
 import processing.video.*;
 import nl.tue.id.oocsi.*;
 
@@ -8,11 +9,15 @@ GUI myGUI;
 Sender mySender;
 Receiver myReceiver;
 Capture cam;
+int inByte;
+Serial myPort;    
 
 void setup() {
   size(1000,800);
   background(120);
   frameRate(10);
+  String portName = Serial.list()[0];
+  myPort = new Serial(this, portName, 9600);
   
   myGUI = new GUI();
   mySender = new Sender();
@@ -51,7 +56,7 @@ void draw() {
 void keyPressed() {
   
   InputHandler.receiveInput(key);
- 
+  myGUI.inputIsNew = true;
   println("Keypressed");
 
 }
@@ -63,4 +68,11 @@ PImage getFrame() {
   }
 
   return frame = cam.get();
+}
+
+void serialEvent(Serial myPort){
+  inByte = myPort.read()-'0';
+  InputHandler.receiveInput(inByte);
+  myGUI.inputIsNew = true;
+  println("Serial received: " + inByte);
 }

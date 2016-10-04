@@ -5,6 +5,7 @@ class GUI {
   PFont normalFont;
   PFont headingFont;
   int circleSize = 120;
+  boolean inputIsNew = false;
 
   GUI() {
     backgroundImg = loadImage("background.jpg");  
@@ -103,7 +104,11 @@ class GUI {
     
     //Drawing webcam feed 
     if (currentState.webcamShown) {
+      //Shows own feed
+      //set(0,0, cam.get());
+      
       if (myReceiver.receiveFrame() != null){
+        println("Showing webcam feed");
         set(0,0, myReceiver.receiveFrame());
       }
     }
@@ -117,7 +122,6 @@ class GUI {
     String price = "€ 0,50";
     String[] buttonText = {"", "", "Start"};    
     PImage[] buttonImg;
-    boolean inputIsNew = false; 
     boolean headerShown = false;
     boolean messageShown = false;
     boolean titleShown = true;
@@ -144,23 +148,25 @@ class GUI {
     }
 
     void update(int input) {
-      println("Input: " + input);
-      println("state: " + state);
+      //println("Input: " + input);
+      //println("state: " + state);
 
       switch(state) {
       case 0:
-        headerShown = false;
-        titleShown = true; 
-        circle3Shown = true;
-        messageShown = false;
-        webcamShown = false;
-        otherIsReady = false;
-        buttonText[0] = "";
-        buttonText[2] = "Start";
-
-        if (input == 3) {
-          state++;
-          inputIsNew = false; 
+        if (inputIsNew) {
+          headerShown = false;
+          titleShown = true; 
+          circle3Shown = true;
+          messageShown = false;
+          webcamShown = false;
+          otherIsReady = false;
+          buttonText[0] = "";
+          buttonText[2] = "Start";
+  
+          if (input == 3) {
+            state++;
+            inputIsNew = false; 
+          }
         }
         break;
 
@@ -189,6 +195,7 @@ class GUI {
           circle3Shown = true;
           productsShown = true;
           productsShown = true;
+          myPort.write("9");
           state++;
           inputIsNew = false; 
         }
@@ -203,18 +210,27 @@ class GUI {
           switch(input) {
           case 1: 
             circle1Selected = true;
+            circle2Selected = false;
+            circle2Selected = false;
             break;
           case 2: 
+            circle1Selected = false;
             circle2Selected = true;
+            circle3Selected = false;
             break;
           case 3: 
+            circle1Selected = false;
+            circle2Selected = false;
             circle3Selected = true;
             break;
           default: 
             break;
           }
-          state++;
+          //state++;
           inputIsNew = false; 
+        } if (input == 4 && inputIsNew) {
+          state++;
+          inputIsNew = false;
         }
         break;
 
