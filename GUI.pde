@@ -195,7 +195,7 @@ class GUI {
           circle3Shown = true;
           productsShown = true;
           productsShown = true;
-          myPort.write("9");
+          //myPort.write("9");
           state++;
           inputIsNew = false; 
         }
@@ -294,6 +294,7 @@ class GUI {
 
       case 7: 
         if (otherIsReady) {
+          altTab();
           if (otherIsStealing && isStealing) {
             header = "Both are stealing. Nobody receives a snack";
           } else if (otherIsStealing && !isStealing) {

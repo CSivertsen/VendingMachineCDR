@@ -1,6 +1,9 @@
 import processing.serial.*;
 import processing.video.*;
 import nl.tue.id.oocsi.*;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 String message;
 
@@ -10,14 +13,15 @@ Sender mySender;
 Receiver myReceiver;
 Capture cam;
 int inByte;
-Serial myPort;    
+Serial myPort;
+Robot robot;
 
 void setup() {
   size(1000,800);
   background(120);
   frameRate(10);
-  String portName = Serial.list()[0];
-  myPort = new Serial(this, portName, 9600);
+  //String portName = Serial.list()[0];
+  //myPort = new Serial(this, portName, 9600);
   
   myGUI = new GUI();
   mySender = new Sender();
@@ -44,6 +48,14 @@ void setup() {
       // Start capturing the images from the camera
       cam.start();
     }
+    
+    try {
+      robot = new Robot();
+      
+    } catch (Exception e) {
+    e.printStackTrace();
+    exit();
+    }
 }
 
 void draw() {
@@ -61,6 +73,21 @@ void keyPressed() {
 
 }
 
+void altTab() {
+  try {
+    robot.keyPress(KeyEvent.VK_ALT);
+    robot.keyPress(KeyEvent.VK_TAB);
+    robot.keyRelease(KeyEvent.VK_TAB);
+    robot.keyRelease(KeyEvent.VK_ALT);
+    
+  } catch (Exception e) {
+    //Uh-oh...
+    e.printStackTrace();
+    exit();
+  }
+} 
+
+
 PImage getFrame() {
 
   if (cam.available() == true) {
@@ -70,9 +97,9 @@ PImage getFrame() {
   return frame = cam.get();
 }
 
-void serialEvent(Serial myPort){
+/*void serialEvent(Serial myPort){
   inByte = myPort.read()-'0';
   InputHandler.receiveInput(inByte);
   myGUI.inputIsNew = true;
   println("Serial received: " + inByte);
-}
+}*/
