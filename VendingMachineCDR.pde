@@ -15,13 +15,16 @@ Capture cam;
 int inByte;
 Serial myPort;
 Robot robot;
+PImage background; 
 
 void setup() {
-  size(1000,800);
-  background(120);
+  fullScreen();
+  background = loadImage("background.jpg");
+  background.resize(width, height);
+  background(background);
   frameRate(10);
-  //String portName = Serial.list()[0];
-  //myPort = new Serial(this, portName, 9600);
+  String portName = Serial.list()[0];
+  myPort = new Serial(this, portName, 9600);
   
   myGUI = new GUI();
   mySender = new Sender();
@@ -97,9 +100,9 @@ PImage getFrame() {
   return frame = cam.get();
 }
 
-/*void serialEvent(Serial myPort){
+void serialEvent(Serial myPort){
   inByte = myPort.read()-'0';
   InputHandler.receiveInput(inByte);
   myGUI.inputIsNew = true;
   println("Serial received: " + inByte);
-}*/
+}

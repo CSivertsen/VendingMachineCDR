@@ -4,8 +4,9 @@ class GUI {
   GUIState currentState;
   PFont normalFont;
   PFont headingFont;
-  int circleSize = 120;
+  int circleSize = 180;
   boolean inputIsNew = false;
+  int imgDisplayWidth = 500;
 
   GUI() {
     backgroundImg = loadImage("background.jpg");  
@@ -32,26 +33,26 @@ class GUI {
 
 
     //background(backgroundImg);
-    background(200);
+    background(background);
 
     //Drawing text
     rectMode(CORNER);
     if (currentState.titleShown) {
       textAlign(CENTER);
-      textFont(headingFont, 40);
+      textFont(headingFont, 60);
       text(currentState.title, width/2, height/2);
       textAlign(LEFT);
     }
 
     if (currentState.headerShown) {
       textAlign(LEFT, TOP);
-      textFont(headingFont, 40);
+      textFont(headingFont, 60);
       text(currentState.header, width*0.1, height*0.1, width*0.6, height*0.5);
     }
 
     if (currentState.messageShown) {
       textAlign(LEFT, TOP);
-      textFont(normalFont, 20);
+      textFont(normalFont, 35);
       text(currentState.message, width*0.1, height*0.3, width*0.5, height*0.5);
     }
 
@@ -60,7 +61,7 @@ class GUI {
     textAlign(CENTER, CENTER);
     strokeWeight(5);
     noFill();
-    textFont(normalFont, 24);
+    textFont(normalFont, 35);
     stroke(255, 255, 255);
     if (currentState.circle1Shown) {
       if (currentState.circle1Selected) {
@@ -70,8 +71,8 @@ class GUI {
       text(currentState.buttonText[0], width*0.8, height*0.25, circleSize, circleSize);
       line(width*0.8+circleSize/2, height*0.25, width, height*0.25);
       if (currentState.productsShown) {
-        text(currentState.price, width*0.8+circleSize*0.75+10, height*0.25+14);
-        image(currentState.buttonImg[0], width*0.8-currentState.buttonImg[0].width, height*0.25-circleSize/2);
+        text(currentState.price, width*0.8+circleSize*0.75+20, height*0.25+20);
+        image(currentState.buttonImg[0], width*0.8-imgDisplayWidth, height*0.25-circleSize/2);
       }
       stroke(255, 255, 255);
     }
@@ -83,8 +84,8 @@ class GUI {
       text(currentState.buttonText[1], width*0.8, height*0.5, circleSize, circleSize);
       line(width*0.8+circleSize/2, height*0.5, width, height*0.5);
       if (currentState.productsShown) {
-        text(currentState.price, width*0.8+circleSize*0.75+10, height*0.5+14); 
-        image(currentState.buttonImg[1], width*0.8-currentState.buttonImg[1].width, height*0.5-circleSize/2);
+        text(currentState.price, width*0.8+circleSize*0.75+20, height*0.5+20); 
+        image(currentState.buttonImg[1], width*0.8-imgDisplayWidth, height*0.5-circleSize/2);
       }
       stroke(255, 255, 255);
     }
@@ -96,8 +97,8 @@ class GUI {
       text(currentState.buttonText[2], width*0.8, height*0.75, circleSize, circleSize);
       line(width*0.8+circleSize/2, height*0.75, width, height*0.75);
       if (currentState.productsShown) {
-        text(currentState.price, width*0.8+circleSize*0.75+10, height*0.75+14);
-        image(currentState.buttonImg[2], width*0.8-currentState.buttonImg[2].width, height*0.75-circleSize/2);
+        text(currentState.price, width*0.8+circleSize*0.75+20, height*0.75+20);
+        image(currentState.buttonImg[2], width*0.8-imgDisplayWidth+10, height*0.75-circleSize/2-20);
       }
       stroke(255, 255, 255);
     }
@@ -153,7 +154,7 @@ class GUI {
 
       switch(state) {
       case 0:
-        if (inputIsNew) {
+        if (inputIsNew && input == 4) {
           headerShown = false;
           titleShown = true; 
           circle3Shown = true;
@@ -195,7 +196,7 @@ class GUI {
           circle3Shown = true;
           productsShown = true;
           productsShown = true;
-          //myPort.write("9");
+          myPort.write("9");
           state++;
           inputIsNew = false; 
         }
@@ -293,7 +294,7 @@ class GUI {
         break;
 
       case 7: 
-        if (otherIsReady) {
+        if (otherIsReady || (inputIsNew && input == 4)) {
           altTab();
           if (otherIsStealing && isStealing) {
             header = "Both are stealing. Nobody receives a snack";
