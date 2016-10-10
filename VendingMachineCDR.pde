@@ -13,9 +13,13 @@ Sender mySender;
 Receiver myReceiver;
 Capture cam;
 int inByte;
-Serial myPort;
+//Serial myPort;
 Robot robot;
 PImage background; 
+PGraphics camCanvas;
+boolean isRecording = false;
+long frameNum = 0;
+int numCustomer = 1; 
 
 void setup() {
   fullScreen();
@@ -23,8 +27,8 @@ void setup() {
   background.resize(width, height);
   background(background);
   frameRate(10);
-  String portName = Serial.list()[0];
-  myPort = new Serial(this, portName, 9600);
+  //String portName = Serial.list()[0];
+  //myPort = new Serial(this, portName, 9600);
   
   myGUI = new GUI();
   mySender = new Sender();
@@ -59,6 +63,8 @@ void setup() {
     e.printStackTrace();
     exit();
     }
+    
+    camCanvas = createGraphics(640, 480);
 }
 
 void draw() {
@@ -66,6 +72,14 @@ void draw() {
   mySender.sendFrame(getFrame());
   myGUI.display();
   myGUI.update();
+  
+  if(isRecording) {
+    camCanvas.beginDraw();
+    camCanvas.set(0,0,cam);
+    camCanvas.endDraw();
+    camCanvas.save("output"+ numCustomer +"/frame" + frameNum + ".jpg");
+    frameNum++;
+  }
 }
 
 void keyPressed() {
@@ -100,9 +114,9 @@ PImage getFrame() {
   return frame = cam.get();
 }
 
-void serialEvent(Serial myPort){
+/*void serialEvent(Serial myPort){
   inByte = myPort.read()-'0';
   InputHandler.receiveInput(inByte);
   myGUI.inputIsNew = true;
   println("Serial received: " + inByte);
-}
+}*/

@@ -7,6 +7,7 @@ class GUI {
   int circleSize = 180;
   boolean inputIsNew = false;
   int imgDisplayWidth = 500;
+  Thread recorderThread;
 
   GUI() {
     backgroundImg = loadImage("background.jpg");  
@@ -20,8 +21,8 @@ class GUI {
     currentState.update(InputHandler.getInput());
     display();
   } 
-  
-  void update(boolean boolInput){
+
+  void update(boolean boolInput) {
     currentState.otherIsStealing = boolInput;
     println("Other person is stealing: " + boolInput);
     currentState.otherIsReady = true; 
@@ -36,13 +37,14 @@ class GUI {
     background(background);
 
     //Drawing text
-    rectMode(CORNER);
+    rectMode(CENTER);
     if (currentState.titleShown) {
       textAlign(CENTER);
       textFont(headingFont, 60);
-      text(currentState.title, width/2, height/2);
+      text(currentState.title, width/2, height, width, height);
       textAlign(LEFT);
     }
+    rectMode(CORNER);
 
     if (currentState.headerShown) {
       textAlign(LEFT, TOP);
@@ -102,18 +104,17 @@ class GUI {
       }
       stroke(255, 255, 255);
     }
-    
+
     //Drawing webcam feed 
     if (currentState.webcamShown) {
       //Shows own feed
       //set(0,0, cam.get());
-      
-      if (myReceiver.receiveFrame() != null){
+
+      if (myReceiver.receiveFrame() != null) {
         println("Showing webcam feed");
-        set(0,0, myReceiver.receiveFrame());
+        set(0, 0, myReceiver.receiveFrame());
       }
     }
-    
   }
 
   class GUIState {
@@ -139,6 +140,7 @@ class GUI {
     boolean isStealing = false;
     boolean otherIsStealing = false;
     boolean otherIsReady = false;
+    boolean hasRun = false;
     int state = 1;
 
     GUIState() {
@@ -154,6 +156,21 @@ class GUI {
 
       switch(state) {
       case 0:
+        if (hasRun == false) {
+
+          Counter counter = new Counter(5000, 10000);
+          Thread counterThread = new Thread(counter);
+          counterThread.start();
+
+          try {
+            counterThread.join();
+          } 
+          catch (InterruptedException e) {
+            println(e);
+          }
+
+          hasRun = true;
+        }
         if (inputIsNew && input == 4) {
           headerShown = false;
           titleShown = true; 
@@ -163,20 +180,19 @@ class GUI {
           otherIsReady = false;
           buttonText[0] = "";
           buttonText[2] = "Start";
-  
-          if (input == 3) {
-            state++;
-            inputIsNew = false; 
-          }
+          numCustomer++;
+          state++;
+          inputIsNew = false;
+          isRecording = false;
         }
-        break;
+        break;  
 
       case 1:
         if (input == 3 && inputIsNew) {
           titleShown = false;
           headerShown = true;
           messageShown = true; 
-
+          isRecording = true;
           header = "";
           message = "This is a study into cooperative consumer behavior. Somebody else will be using an identical machine placed at a different location. Waiting times may occur.";
           buttonText[2] = "Continue";
@@ -196,14 +212,14 @@ class GUI {
           circle3Shown = true;
           productsShown = true;
           productsShown = true;
-          myPort.write("9");
+          //5myPort.write("9");
           state++;
-          inputIsNew = false; 
+          inputIsNew = false;
         }
         break;
 
       case 3:
-        if (input == 1 || input == 2 || input == 3 && inputIsNew) { 
+        if ((input == 1 || input == 2 || input == 3) && inputIsNew) { 
           header = "Payment";
           message = "Please insert cash to pay for your candy";
           buttonText[2] = "";
@@ -212,7 +228,7 @@ class GUI {
           case 1: 
             circle1Selected = true;
             circle2Selected = false;
-            circle2Selected = false;
+            circle3Selected = false;
             break;
           case 2: 
             circle1Selected = false;
@@ -228,8 +244,9 @@ class GUI {
             break;
           }
           //state++;
-          inputIsNew = false; 
-        } if (input == 4 && inputIsNew) {
+          inputIsNew = false;
+        } 
+        if (input == 4 && inputIsNew) {
           state++;
           inputIsNew = false;
         }
@@ -250,7 +267,7 @@ class GUI {
           productsShown = false;
 
           state++;
-          inputIsNew = false; 
+          inputIsNew = false;
         }
         break;
 
@@ -267,8 +284,7 @@ class GUI {
           tableShown = true;
 
           state++;
-          inputIsNew = false; 
-          
+          inputIsNew = false;
         }
         break;
 
@@ -288,28 +304,30 @@ class GUI {
           }
           mySender.sendBoolean(isStealing);
           state++;
-          inputIsNew = false; 
+          inputIsNew = false;
         }
 
         break;
 
       case 7: 
         if (otherIsReady || (inputIsNew && input == 4)) {
-          altTab();
           if (otherIsStealing && isStealing) {
-            header = "Both are stealing. Nobody receives a snack";
+            title = "Both are stealing. Nobody receives a snack";
           } else if (otherIsStealing && !isStealing) {
-            header = "The other customer took your snack";
+            title = "The other customer took your snack";
           } else if (!otherIsStealing && isStealing) {
-            header = "You took the other customers snack";
+            title = "You took the other customers snack";
           } else if (!otherIsStealing && !isStealing) {
-            header = "You both got one snack";
+            title = "You both got one snack";
           } 
-          message = "Webcam feed missing";
+          message = "";
+          header = "";
+          titleShown = true;
           webcamShown = true;
           headerShown = true;
           state = 0;
-          inputIsNew = false; 
+          inputIsNew = false;
+          hasRun = false;
         }
         break;
 
