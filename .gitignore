@@ -26,6 +26,10 @@ output3
 output4
 output5
 
+# Font files
+*.otf
+*.ttf
+
 # =========================
 # Operating System Files
 # =========================
