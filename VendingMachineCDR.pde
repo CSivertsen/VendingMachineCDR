@@ -34,7 +34,7 @@ void setup() {
   mySender = new Sender();
   myReceiver = new Receiver();
   
-  String[] cameras = Capture.list();
+  /*String[] cameras = Capture.list();
 
     if (cameras == null) {
       println("Failed to retrieve the list of available cameras, will try the default...");
@@ -54,7 +54,7 @@ void setup() {
       
       // Start capturing the images from the camera
       cam.start();
-    }
+    }*/
     
     try {
       robot = new Robot();
@@ -69,17 +69,17 @@ void setup() {
 
 void draw() {
  
-  mySender.sendFrame(getFrame());
+  //mySender.sendFrame(getFrame());
   myGUI.display();
   myGUI.update();
   
-  if(isRecording) {
+  /*if(isRecording) {
     camCanvas.beginDraw();
     camCanvas.set(0,0,cam);
     camCanvas.endDraw();
     camCanvas.save("output"+ numCustomer +"/frame" + frameNum + ".jpg");
     frameNum++;
-  }
+  }*/
 }
 
 void keyPressed() {

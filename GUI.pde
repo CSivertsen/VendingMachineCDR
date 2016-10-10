@@ -1,6 +1,7 @@
 class GUI {
 
   PImage backgroundImg;
+  PImage tableImg;
   GUIState currentState;
   PFont normalFont;
   PFont headingFont;
@@ -10,7 +11,8 @@ class GUI {
   Thread recorderThread;
 
   GUI() {
-    backgroundImg = loadImage("background.jpg");  
+    backgroundImg = loadImage("background.jpg");
+    tableImg = loadImage("schemacandy.png");
     currentState = new GUIState();
     normalFont = createFont("Hero", 30, true);
     headingFont = createFont("Agent Orange", 40, true);
@@ -104,6 +106,10 @@ class GUI {
       }
       stroke(255, 255, 255);
     }
+    
+    if (currentState.tableShown) {
+      image(tableImg, width*0.1, height*0.5, tableImg.width*2, tableImg.height*2);
+    }
 
     //Drawing webcam feed 
     if (currentState.webcamShown) {
@@ -172,6 +178,7 @@ class GUI {
           hasRun = true;
         }
         if (inputIsNew && input == 4) {
+          title = "Co-op Candy";
           headerShown = false;
           titleShown = true; 
           circle3Shown = true;
