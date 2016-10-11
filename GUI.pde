@@ -27,6 +27,7 @@ class GUI {
   void update(boolean boolInput) {
     currentState.otherIsStealing = boolInput;
     println("Other person is stealing: " + boolInput);
+    inputIsNew = true;
     currentState.otherIsReady = true; 
     currentState.update(4);
     display();
@@ -106,7 +107,7 @@ class GUI {
       }
       stroke(255, 255, 255);
     }
-    
+
     if (currentState.tableShown) {
       image(tableImg, width*0.1, height*0.5, tableImg.width*2, tableImg.height*2);
     }
@@ -163,21 +164,22 @@ class GUI {
       switch(state) {
       case 0:
         if (hasRun == false) {
-
-          Counter counter = new Counter(5000, 10000);
-          Thread counterThread = new Thread(counter);
-          counterThread.start();
-
-          try {
-            counterThread.join();
-          } 
-          catch (InterruptedException e) {
-            println(e);
-          }
-
+          println("I am starting the tab delay now");
+          
+          /*//thread("counter");
+          delay(5000);
+          println("tabbing first");
+          altTab();
+          delay(5000);
+          println("tabbing second"); 
+          altTab();*/
+          
+          println("The delay and tab has ended");
           hasRun = true;
         }
         if (inputIsNew && input == 4) {
+          println("Updating interface to start screen");
+          myPort.write("0");
           title = "Co-op Candy";
           headerShown = false;
           titleShown = true; 
@@ -204,7 +206,7 @@ class GUI {
           message = "This is a study into cooperative consumer behavior. Somebody else will be using an identical machine placed at a different location. Waiting times may occur.";
           buttonText[2] = "Continue";
           state++;
-          inputIsNew = false; 
+          inputIsNew = false;
         }
         break;
 
@@ -219,7 +221,7 @@ class GUI {
           circle3Shown = true;
           productsShown = true;
           productsShown = true;
-          //5myPort.write("9");
+          myPort.write("9");
           state++;
           inputIsNew = false;
         }
@@ -312,26 +314,34 @@ class GUI {
           mySender.sendBoolean(isStealing);
           state++;
           inputIsNew = false;
+          println("I'm waiting");
         }
 
         break;
 
       case 7: 
-        if (otherIsReady || (inputIsNew && input == 4)) {
+        println("I am in the result state bit did not update the interface");
+        //if (otherIsReady || (inputIsNew && input == 4)) {
+        if (inputIsNew && input == 4) {
           if (otherIsStealing && isStealing) {
             title = "Both are stealing. Nobody receives a snack";
+            myPort.write("8");
           } else if (otherIsStealing && !isStealing) {
             title = "The other customer took your snack";
+            myPort.write("8");
           } else if (!otherIsStealing && isStealing) {
             title = "You took the other customers snack";
+            myPort.write("6");
           } else if (!otherIsStealing && !isStealing) {
             title = "You both got one snack";
+            myPort.write("7");
           } 
+          println("I have changed the interface to display the result");
           message = "";
           header = "";
           titleShown = true;
           webcamShown = true;
-          headerShown = true;
+          headerShown = true;  
           state = 0;
           inputIsNew = false;
           hasRun = false;

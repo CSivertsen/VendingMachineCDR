@@ -13,7 +13,7 @@ Sender mySender;
 Receiver myReceiver;
 Capture cam;
 int inByte;
-//Serial myPort;
+Serial myPort;
 Robot robot;
 PImage background; 
 PGraphics camCanvas;
@@ -26,9 +26,9 @@ void setup() {
   background = loadImage("background.jpg");
   background.resize(width, height);
   background(background);
-  frameRate(10);
-  //String portName = Serial.list()[0];
-  //myPort = new Serial(this, portName, 9600);
+  //frameRate(29);
+  String portName = Serial.list()[0];
+  myPort = new Serial(this, portName, 9600);
   
   myGUI = new GUI();
   mySender = new Sender();
@@ -86,9 +86,30 @@ void keyPressed() {
   
   InputHandler.receiveInput(key);
   myGUI.inputIsNew = true;
-  println("Keypressed");
+  //println("Keypressed");
 
 }
+
+void counter() {
+      println("I'm tabbing");
+      boolean isCounting = true;
+      boolean doneFirstTab = false;
+      long delay1 = 5000;
+      long delay2 = 10000;
+
+      long startTime = millis();
+
+      while (isCounting) {
+        if (millis() - startTime > delay1 && doneFirstTab == false) {
+          altTab();
+          startTime = millis();
+          doneFirstTab = true;
+        } else if ( millis() - startTime > delay2 && doneFirstTab == true) {
+          altTab();
+          isCounting = false;
+        }
+      }
+    }
 
 void altTab() {
   try {
@@ -114,9 +135,9 @@ PImage getFrame() {
   return frame = cam.get();
 }
 
-/*void serialEvent(Serial myPort){
+void serialEvent(Serial myPort){
   inByte = myPort.read()-'0';
   InputHandler.receiveInput(inByte);
   myGUI.inputIsNew = true;
-  println("Serial received: " + inByte);
-}*/
+  //println("Serial received: " + inByte);
+}
