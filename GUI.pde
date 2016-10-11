@@ -151,7 +151,7 @@ class GUI {
 
     GUIState() {
       buttonImg = new PImage[3];
-      buttonImg[0] = loadImage("kinder.png");
+      buttonImg[0] = loadImage("snickers.png");
       buttonImg[1] = loadImage("twix.png");
       buttonImg[2] = loadImage("kitkat.png");
     }
