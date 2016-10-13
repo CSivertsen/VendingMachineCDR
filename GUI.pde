@@ -321,8 +321,7 @@ class GUI {
 
       case 7: 
         println("I am in the result state bit did not update the interface");
-        //if (otherIsReady || (inputIsNew && input == 4)) {
-        if (inputIsNew && input == 4) {
+        if (otherIsReady || (inputIsNew && input == 4)) {
           if (otherIsStealing && isStealing) {
             title = "Both are stealing. Nobody receives a snack";
             myPort.write("8");
